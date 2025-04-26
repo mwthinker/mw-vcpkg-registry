@@ -1,0 +1,5 @@
+The package CppSdl2 provides CMake targets:
+
+# Header only
+find_package(Signal CONFIG REQUIRED)
+target_link_libraries(main PRIVATE Signal::Signal)

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "cppsdl2",
+  "version": "0.1.1",
+  "description": "A C++ wrapper around SDL2 (Simple Direct Media Layer) and OpenGL (> v3.3).",
+  "homepage": "https://github.com/mwthinker/CppSdl2",
+  "license": "MIT",
+  "dependencies": [
+    "fmt",
+    "freetype",
+    "glbinding",
+    "glm",
+    "gtest",
+    "sdl2",
+    "sdl2-image",
+    "sdl2-mixer",
+    "sdl2-ttf",
+    "spdlog",
+    "vcpkg-cmake",
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    }
+  ]
+}
