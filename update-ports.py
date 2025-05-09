@@ -184,6 +184,10 @@ def update_port(portname: str) -> list[str]:
 
     # Update vcpkg.json
     vcpkg_data["version"] = new_version
+    # Also update description, homepage, and license from remote vcpkg.json if present
+    for field in ["description", "homepage", "license"]:
+        if field in github_vcpkg_data and github_vcpkg_data[field]:
+            vcpkg_data[field] = github_vcpkg_data[field]
 
     with open(vcpkg_json_path, "w") as f:
         json.dump(vcpkg_data, f, indent=2)
