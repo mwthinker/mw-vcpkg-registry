@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
   "name": "calculator",
   "version": "0.1.0",
-  "description": "",
+  "description": "A C++ Calculator lib to evaluate mathematical expressions during runtime.",
   "homepage": "https://github.com/mwthinker/Calculator",
   "license": "MIT",
   "dependencies": [

@@ -1,8 +1,8 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO mwthinker/Calculator
-    REF -
-    SHA512 -
+    REF 6c81805bf1ed8d6be48acc21d27e78b203102bc4
+    SHA512 f07f200f77014fab8d5cceaafd7762365b0dc23ae32e890626bf58d46e62122e9d522d41f9bdaa0a1da102623549d1e39234968b6e8ab9f3affb2c84bcf033ef
     HEAD_REF master
 )
 
