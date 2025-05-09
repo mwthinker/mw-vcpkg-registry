@@ -1,0 +1,4 @@
+The package Calculator provides CMake targets:
+
+find_package(Calculator CONFIG REQUIRED)
+target_link_libraries(main PRIVATE Calculator::Calculator)
