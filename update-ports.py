@@ -160,6 +160,19 @@ def update_port(portname: str) -> list[str]:
         print(f"Error fetching or validating vcpkg.json from GitHub: {e}")
         return []
 
+    current_version = vcpkg_data["version"]
+    # Check if the version has changed
+    try:
+        if new_version == current_version:
+            print(f"Port '{portname}' has a different commit hash but the same version '{current_version}'. Skipping update.")
+            return []
+        elif Version(new_version) < Version(current_version):
+            print(f"Error: New version '{new_version}' is less than the current version '{current_version}' for {portname}.")
+            return []
+    except InvalidVersion as e:
+        print(f"Error: Invalid version format for '{portname}': {e}")
+        return []
+
     # Update portfile.cmake
     with open(portfile_path, "r") as f:
         lines = f.readlines()
@@ -171,16 +184,6 @@ def update_port(portname: str) -> list[str]:
             elif line.strip().startswith("SHA512"):
                 line = f"    SHA512 {new_sha512}\n"
             f.write(line)
-
-    # Check if the version has changed
-    current_version = vcpkg_data["version"]
-    try:
-        if Version(new_version) < Version(current_version):
-            print(f"Error: New version '{new_version}' is less than the current version '{current_version}' for {portname}.")
-            return []
-    except InvalidVersion as e:
-        print(f"Error: Invalid version format for '{portname}': {e}")
-        return []
 
     # Update vcpkg.json
     vcpkg_data["version"] = new_version
