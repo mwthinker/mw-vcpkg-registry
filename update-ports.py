@@ -153,7 +153,8 @@ def update_port(portname: str) -> list[str]:
         response = requests.get(github_vcpkg_url)
         response.raise_for_status()
         github_vcpkg_data = response.json()
-        new_version = github_vcpkg_data.get("version", "").strip()
+        new_version: str = github_vcpkg_data.get("version", "").strip()
+        new_port_version: int = github_vcpkg_data.get("port-version", 0)
         if not new_version:
             raise ValueError(f"Error: GitHub 'vcpkg.json' for {portname} is missing a valid 'version' field.")
     except (requests.RequestException, ValueError) as e:
@@ -161,13 +162,17 @@ def update_port(portname: str) -> list[str]:
         return []
 
     current_version = vcpkg_data["version"]
+    current_port_version = vcpkg_data.get("port-version", 0)
     # Check if the version has changed
     try:
-        if new_version == current_version:
-            print(f"Port '{portname}' has a different commit hash but the same version '{current_version}'. Skipping update.")
+        if new_version == current_version and new_port_version == current_port_version:
+            print(f"Port '{portname}' has not changed version '{current_version}', or port-version '{current_port_version}', skip") 
             return []
         elif Version(new_version) < Version(current_version):
             print(f"Error: New version '{new_version}' is less than the current version '{current_version}' for {portname}.")
+            return []
+        elif Version(new_version) == Version(current_version) and new_port_version < current_port_version:
+            print(f"Error: New port-version '{new_port_version}' is less than the current port-version '{current_port_version}' for {portname}.")
             return []
     except InvalidVersion as e:
         print(f"Error: Invalid version format for '{portname}': {e}")
@@ -187,6 +192,7 @@ def update_port(portname: str) -> list[str]:
 
     # Update vcpkg.json
     vcpkg_data["version"] = new_version
+    vcpkg_data["port-version"] = new_port_version
     # Also update description, homepage, and license from remote vcpkg.json if present
     for field in ["description", "homepage", "license"]:
         if field in github_vcpkg_data and github_vcpkg_data[field]:
