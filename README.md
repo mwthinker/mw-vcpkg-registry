@@ -1,4 +1,5 @@
-# mw-vcpkg-registry
+mw-vcpkg-registry [![CI build](https://github.com/mwthinker/mw-vcpkg-registry/actions/workflows/ci.yml/badge.svg)](https://github.com/mwthinker/mw-vcpkg-registry/actions/workflows/ci.yml)  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+======
 A vcpkg repository containing some of mwthinker's C++ repositories.
 
 ## How to use this vcpkg registry
@@ -35,6 +36,11 @@ For a vcpkg project, use it by having a `vcpkg-configuration.json` file in the r
 ### How to update the ports
 1. Run the `update_ports.py` script; it will update the REF and SHA256 hash to the latest version of the repository, and the baseline will be updated. Only ports that have a newer commit hash or a newer version/port-version in the remote repository will be updated.
 2. Make sure the ports work before pushing the commits made by the script.
+
+### Add new ports to test folder
+Update `CMakeLists.txt`, `vcpkg-configuration.txt` and `vcpkg.json` with the new/updated port.
+
+Github action will try to build and run the binary.
 
 ## Python
 This repository contains a Python script to automate the process of creating a vcpkg registry. The script is located in the `scripts` directory and can be run with the following command:

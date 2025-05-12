@@ -1,36 +1,65 @@
-name: Test vcpkg ports
-
-on:
+name: CI
+on: 
   push:
-    branches: ["master"]
+    branches:
+      - master
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  job:
+    name: ${{ matrix.os }}-${{ github.workflow }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            preset: 'windows'
+          - os: ubuntu-latest
+            preset: 'unix'
+          - os: macos-latest
+            preset: 'unix'
 
     steps:
-    - uses: actions/checkout@v4
+      - name: Check out repository code
+        uses: actions/checkout@v3
 
-    - name: Acquire vcpkg
-      uses: actions/checkout@v4
-      with:
-        repository: "Microsoft/vcpkg"
-        path: vcpkg
+      - name: Set C++/C compiler on macOS
+        shell: bash
+        run: echo "CC=gcc-11" >> $GITHUB_ENV; echo "CXX=g++-11" >> $GITHUB_ENV;
+        if: runner.os == 'macOS'
 
-    - name: Bootstrap vcpkg
-      run: "${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh"
-      shell: bash
+      - name: Set C++ VCPKG_ROOT
+        shell: bash
+        run: echo VCPKG_ROOT="$VCPKG_INSTALLATION_ROOT" >> "$GITHUB_ENV"; cat "$GITHUB_ENV"
 
-    - name: Enable GitHub Actions Cache backend
-      uses: actions/github-script@v7
-      with:
-        script: |
-          core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
-          core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+      - name: Tool versions
+        shell: bash
+        run: |
+          g++ --version
+          make --version
+        if: runner.os == 'Linux' || runner.os == 'macOS'
 
-    - name: Build ports
-      run: ${{ github.workspace }}/vcpkg/vcpkg install --feature-flags=manifests
-      env:
-        VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
-        VCPKG_OVERLAY_PORTS: "${{ github.workspace }}/ports"
-      shell: bash
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y libltdl-dev libx11-dev libxft-dev libxext-dev
+        if: runner.os == 'Linux'
+
+      - name: Run CMake
+        shell: bash
+        run: |
+          cd test
+          cmake --preset=${{ matrix.preset }} -B build_debug -DCppSdl3_Test=1 -DCppSdl3_Example=1 -DCMAKE_VERBOSE_MAKEFILE=1 -DCMAKE_BUILD_TYPE=Debug
+          cmake --preset=${{ matrix.preset }} -B build_release -DCppSdl3_Test=1 -DCppSdl3_Example=1 -DCMAKE_VERBOSE_MAKEFILE=1 -DCMAKE_BUILD_TYPE=Release
+
+      - name: Print log message on macOS
+        shell: bash
+        run: |
+          cd test
+          cat /Users/runner/work/CppSdl3/CppSdl3/vcpkg/buildtrees/sdl3/install-x64-osx-dbg-out.log
+        if: runner.os == 'macOS'
+
+      - name: Compile binaries
+        shell: bash
+        run: |
+          cd test
+          cmake --build build_debug
+          cmake --build build_release
