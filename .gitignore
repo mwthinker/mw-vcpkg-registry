@@ -34,3 +34,4 @@
 *.app
 __pycache__/
 test/build
+test/linux_build

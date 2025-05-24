@@ -11,7 +11,6 @@ Usage:
 Requirements:
     - Python 3.7+
     - 'requests' and 'packaging' modules (install with pip if missing)
-    - Must be run from the root of the vcpkg registry repository
     - Requires git in PATH
 
 All changes are committed to git automatically.

@@ -40,6 +40,7 @@ jobs:
         if: runner.os == 'Linux' || runner.os == 'macOS'
 
       - name: Install system dependencies
+        # Needed for SDL3
         run: sudo apt-get update && sudo apt-get install -y libltdl-dev libx11-dev libxft-dev libxext-dev
         if: runner.os == 'Linux'
 
@@ -47,8 +48,8 @@ jobs:
         shell: bash
         run: |
           cd test
-          cmake --preset=${{ matrix.preset }} -B build_debug -DCppSdl3_Test=1 -DCppSdl3_Example=1 -DCMAKE_VERBOSE_MAKEFILE=1 -DCMAKE_BUILD_TYPE=Debug
-          cmake --preset=${{ matrix.preset }} -B build_release -DCppSdl3_Test=1 -DCppSdl3_Example=1 -DCMAKE_VERBOSE_MAKEFILE=1 -DCMAKE_BUILD_TYPE=Release
+          cmake --preset=${{ matrix.preset }} -B build_debug -DCMAKE_VERBOSE_MAKEFILE=1 -DCMAKE_BUILD_TYPE=Debug
+          cmake --preset=${{ matrix.preset }} -B build_release -DCMAKE_VERBOSE_MAKEFILE=1 -DCMAKE_BUILD_TYPE=Release
 
       - name: Print log message on macOS
         shell: bash
@@ -63,3 +64,19 @@ jobs:
           cd test
           cmake --build build_debug
           cmake --build build_release
+
+      - name: Run binary
+        shell: bash
+        run: |
+          cd test
+          ./build_debug/CppSdl3_Test
+          ./build_release/CppSdl3_Test
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+
+      - name: Run binary on Windows
+        shell: bash
+        run: |
+          cd test
+          .\build_debug\CppSdl3_Test.exe
+          .\build_release\CppSdl3_Test.exe
+        if: runner.os == 'Windows'
