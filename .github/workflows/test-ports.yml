@@ -76,6 +76,6 @@ jobs:
         shell: bash
         run: |
           cd test
-          .\build_debug\TestProject.exe
-          .\build_release\TestProject.exe
+          ./build_debug/TestProject.exe
+          ./build_release/TestProject.exe
         if: runner.os == 'Windows'
