@@ -27,7 +27,7 @@ except ImportError:
     print("Error: The 'packaging' module is required. Install it with 'pip install packaging'.")
     exit(1)
 
-from util.util import format_vcpkg_manifest, get_sha512_from_github, validate_vcpkg_json, get_or_create_baseline, get_git_tree_hash
+from util.util import format_vcpkg_manifest, get_sha512_from_github, load_and_validate_vcpkg_json, get_or_create_baseline, get_git_tree_hash
 
 def get_latest_commit_hash(repo_name: str, branch: str) -> Optional[str]:
     url = f"https://api.github.com/repos/{repo_name}/git/refs/heads/{branch}"
@@ -77,7 +77,7 @@ def update_port(portname: str) -> list[str]:
         return []
 
     try:
-        vcpkg_data = validate_vcpkg_json(vcpkg_json_path)
+        vcpkg_data = load_and_validate_vcpkg_json(vcpkg_json_path)
     except (FileNotFoundError, ValueError) as e:
         print(e)
         return []

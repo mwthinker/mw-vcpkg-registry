@@ -60,7 +60,7 @@ def run_vcpkg_add_new_ports() -> None:
     except subprocess.CalledProcessError as e:
         print(f"Error running vcpkg command: {e}")
 
-def validate_vcpkg_json(vcpkg_json_path: str) -> dict:
+def load_and_validate_vcpkg_json(vcpkg_json_path: str) -> dict:
     """
     Validate that a vcpkg.json file exists and contains a valid version.
     """

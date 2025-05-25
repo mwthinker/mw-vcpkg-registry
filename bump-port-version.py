@@ -29,7 +29,7 @@ except ImportError:
     exit(1)
 
 # Import utility functions
-from util.util import format_vcpkg_manifest, get_or_create_baseline, get_git_tree_hash
+from util.util import format_vcpkg_manifest, get_or_create_baseline, get_git_tree_hash, load_and_validate_vcpkg_json
 
 def get_local_commit_hash() -> Optional[str]:
     """Get the latest commit hash from the local repository."""
@@ -136,10 +136,19 @@ def bump_port_version(portname: str) -> List[str]:
     new_port_version = latest_port_version + 1
     print(f"Bumping port-version for '{portname}' from {latest_port_version} to {new_port_version}...")
     
+    try:
+        vcpkg_data = load_and_validate_vcpkg_json(vcpkg_json_path)
+        vcpkg_data["port-version"] = new_port_version
+        with open(vcpkg_json_path, "w") as f:
+            json.dump(vcpkg_data, f, indent=2)
+    except Exception as e:
+        print(f"Error updating vcpkg.json with new port-version: {e}")
+        return []
+
     # Format the vcpkg.json file
     if not format_vcpkg_manifest(vcpkg_json_path):
         print(f"Error formatting vcpkg.json for {portname}.")
-        return []    # Add a new version entry to the versions file
+        return []
     version_port_data["versions"].insert(0, {
         "git-tree": git_tree,
         "version": latest_version,
