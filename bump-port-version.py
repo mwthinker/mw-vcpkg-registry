@@ -133,48 +133,53 @@ def bump_port_version(portname: str) -> List[str]:
         print(f"Error: Git-tree hash hasn't changed for port '{portname}'. No need to bump port-version.")
         return []
 
-    new_port_version = latest_port_version + 1
-    print(f"Bumping port-version for '{portname}' from {latest_port_version} to {new_port_version}...")
-    
+    # Load vcpkg.json and check port-version
     try:
         vcpkg_data = load_and_validate_vcpkg_json(vcpkg_json_path)
-        vcpkg_data["port-version"] = new_port_version
-        with open(vcpkg_json_path, "w") as f:
-            json.dump(vcpkg_data, f, indent=2)
+        user_port_version = vcpkg_data.get("port-version", 0)
     except Exception as e:
-        print(f"Error updating vcpkg.json with new port-version: {e}")
+        print(f"Error reading vcpkg.json: {e}")
         return []
 
-    # Format the vcpkg.json file
+    # Check that the user has manually updated port-version to one higher than the previous
+    expected_port_version = latest_port_version + 1
+    if user_port_version != expected_port_version:
+        print(f"Error: The port-version in vcpkg.json is {user_port_version}, but it must be exactly one higher than the previous ({latest_port_version} → {expected_port_version}). Please update vcpkg.json manually before running this script.")
+        return []
+
+    print(f"Detected user-updated port-version: {user_port_version} (expected: {expected_port_version})")
+
+    # Format the vcpkg.json file (optional, but keeps formatting consistent)
     if not format_vcpkg_manifest(vcpkg_json_path):
         print(f"Error formatting vcpkg.json for {portname}.")
         return []
+
     version_port_data["versions"].insert(0, {
         "git-tree": git_tree,
         "version": latest_version,
-        "port-version": new_port_version
+        "port-version": user_port_version
     })
 
     # Save the updated JSON file
     with open(version_port_file, "w") as f:
         json.dump(version_port_data, f, indent=2)
-    print(f"Updated '{version_port_file}' with new port-version: {new_port_version}.")    # Update baseline.json
+    print(f"Updated '{version_port_file}' with new port-version: {user_port_version}.")    # Update baseline.json
     baseline_file, baseline_data = get_or_create_baseline()
     baseline_data["default"][portname] = {
         "baseline": latest_version,
-        "port-version": new_port_version
+        "port-version": user_port_version
     }
     
     # Save the updated baseline.json
     with open(baseline_file, "w") as f:
         json.dump(baseline_data, f, indent=2)
 
-    print(f"Updated 'baseline.json' for port '{portname}' with new port-version: {new_port_version}.")
+    print(f"Updated 'baseline.json' for port '{portname}' with new port-version: {user_port_version}.")
     
     # Commit changes
     try:
         subprocess.run(["git", "add", vcpkg_json_path, version_port_file, baseline_file], check=True)
-        subprocess.run(["git", "commit", "-m", f"Bumped port-version for {portname} to {new_port_version}"], check=True)
+        subprocess.run(["git", "commit", "-m", f"Bumped port-version for {portname} to {user_port_version}"], check=True)
         print(f"Committed updates for {portname}.")
         return [vcpkg_json_path, version_port_file, baseline_file]
     except subprocess.CalledProcessError as e:
