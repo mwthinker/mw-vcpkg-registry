@@ -1,8 +1,10 @@
+import json
 import subprocess
 import os
 import platform
 import hashlib
 import requests
+from typing import Optional, List, Tuple, Dict
 
 def get_vcpkg_executable() -> str:
     vcpkg_root = os.environ.get("VCPKG_ROOT")
@@ -57,3 +59,51 @@ def run_vcpkg_add_new_ports() -> None:
         print("vcpkg command executed successfully.")
     except subprocess.CalledProcessError as e:
         print(f"Error running vcpkg command: {e}")
+
+def validate_vcpkg_json(vcpkg_json_path: str) -> dict:
+    """
+    Validate that a vcpkg.json file exists and contains a valid version.
+    """
+    if not os.path.isfile(vcpkg_json_path):
+        raise FileNotFoundError(f"Error: Missing 'vcpkg.json' at {vcpkg_json_path}.")
+
+    with open(vcpkg_json_path, "r") as f:
+        vcpkg_data = json.load(f)
+
+    if "version" not in vcpkg_data or not isinstance(vcpkg_data["version"], str) or not vcpkg_data["version"].strip():
+        raise ValueError(
+            f"Error: 'vcpkg.json' is missing the 'version' field, it is not a string, or it is empty at {vcpkg_json_path}."
+        )
+
+    return vcpkg_data
+
+def get_or_create_baseline() -> Tuple[str, Dict]:
+    """Get or create baseline.json file."""
+    versions_dir = "versions"
+    if not os.path.isdir(versions_dir):
+        os.makedirs(versions_dir)
+    
+    baseline_file = os.path.join(versions_dir, "baseline.json")
+    if not os.path.isfile(baseline_file):
+        print(f"Creating new 'baseline.json' file in '{versions_dir}' directory.")
+        with open(baseline_file, "w") as f:
+            json.dump({"default": {}}, f, indent=2)
+    with open(baseline_file, "r") as f:
+        return baseline_file, json.load(f)
+    
+def get_git_tree_hash(port_path: str, commit_hash: str) -> Optional[str]:
+    """Get the git-tree hash for a specific commit in the local repository for a specific port folder."""
+    try:
+        # Convert backslashes to forward slashes for Git compatibility
+        git_friendly_port_path = port_path.replace('\\', '/')
+        
+        result = subprocess.run(
+            ["git", "rev-parse", f"{commit_hash}:{git_friendly_port_path}"],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        return result.stdout.strip()
+    except subprocess.CalledProcessError as e:
+        print(f"Error getting git-tree hash for commit {commit_hash} in {port_path}: {e}")
+        return None
