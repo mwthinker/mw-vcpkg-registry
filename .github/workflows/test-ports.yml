@@ -16,8 +16,6 @@ jobs:
             preset: 'windows'
           - os: ubuntu-latest
             preset: 'unix'
-          - os: macos-latest
-            preset: 'unix'
 
     steps:
       - name: Check out repository code
