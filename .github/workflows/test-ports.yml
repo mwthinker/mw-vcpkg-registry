@@ -45,8 +45,8 @@ jobs:
         if: runner.os == 'Linux'
 
       - name: Update vcpkg-configuration.json baseline to always use latest
+        shell: bash
         run: |
-          shell: bash
           LATEST_BASELINE=$(git ls-remote https://github.com/mwthinker/mw-vcpkg-registry.git HEAD | awk '{print $1}')
           sed -i.bak -E '/"repository": "https:\/\/github.com\/mwthinker\/mw-vcpkg-registry.git"/{N;s/("repository": "https:\/\/github.com\/mwthinker\/mw-vcpkg-registry.git",\n[[:space:]]*"baseline": ")[a-f0-9]+(")/\1'"$LATEST_BASELINE"'\2/;}' test/vcpkg-configuration.json
 
