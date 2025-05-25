@@ -18,7 +18,7 @@ def replace_hash_in_portfile(portname: str, new_ref: str, new_sha512: str) -> No
     with open(portfile_path, "r") as f:
         lines = f.readlines()
 
-    with open(portfile_path, "w") as f:
+    with open(portfile_path, "w", newline='\n') as f:
         for line in lines:
             if line.strip().startswith("REF"):
                 line = f"    REF {new_ref}\n"
@@ -110,7 +110,7 @@ def remove_highest_version(portname: str) -> None:
     data["versions"].remove(highest_version)
 
     # Save the updated JSON file
-    with open(json_file, "w") as f:
+    with open(json_file, "w", newline='\n') as f:
         json.dump(data, f, indent=2)
 
     print(f"Removed the block with the highest version: {highest_version['version']} from '{json_file}'.")
@@ -130,7 +130,7 @@ def remove_highest_version(portname: str) -> None:
             del baseline_data["default"][portname]
 
             # Save the updated baseline.json
-            with open(baseline_file, "w") as f:
+            with open(baseline_file, "w", newline='\n') as f:
                 json.dump(baseline_data, f, indent=2)
 
             print(f"Removed the block for '{portname}' with baseline '{highest_version['version']}' from 'baseline.json'.")

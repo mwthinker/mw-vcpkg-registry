@@ -161,7 +161,7 @@ def bump_port_version(portname: str) -> List[str]:
     })
 
     # Save the updated JSON file
-    with open(version_port_file, "w") as f:
+    with open(version_port_file, "w", newline='\n') as f:
         json.dump(version_port_data, f, indent=2)
     print(f"Updated '{version_port_file}' with new port-version: {user_port_version}.")    # Update baseline.json
     baseline_file, baseline_data = get_or_create_baseline()
@@ -171,7 +171,7 @@ def bump_port_version(portname: str) -> List[str]:
     }
     
     # Save the updated baseline.json
-    with open(baseline_file, "w") as f:
+    with open(baseline_file, "w", newline='\n') as f:
         json.dump(baseline_data, f, indent=2)
 
     print(f"Updated 'baseline.json' for port '{portname}' with new port-version: {user_port_version}.")

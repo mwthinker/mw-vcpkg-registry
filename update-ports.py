@@ -150,7 +150,7 @@ def update_port(portname: str) -> list[str]:
     with open(portfile_path, "r") as f:
         lines = f.readlines()
 
-    with open(portfile_path, "w") as f:
+    with open(portfile_path, "w", newline='\n') as f:
         for line in lines:
             if line.strip().startswith("REF"):
                 line = f"    REF {latest_commit_hash}\n"
@@ -207,7 +207,7 @@ def get_or_create_versions_file(portname: str) -> tuple[str, dict]:
     if not os.path.isfile(json_file):
         print(f"Creating new version file '{json_file}' for port '{portname}'.")
         os.makedirs(os.path.dirname(json_file), exist_ok=True)
-        with open(json_file, "w") as f:
+        with open(json_file, "w", newline='\n') as f:
             json.dump({"versions": []}, f, indent=2)
     with open(json_file, "r") as f:
         return json_file, json.load(f)
@@ -232,7 +232,7 @@ def add_or_update_versions_file(portname: str, new_version: str, git_tree: str) 
     })
 
     # Save the updated JSON file
-    with open(version_port_file, "w") as f:
+    with open(version_port_file, "w", newline='\n') as f:
         json.dump(version_port_data, f, indent=2)
     print(f"Updated '{version_port_file}' with new version: {new_version}.")
 
@@ -243,7 +243,7 @@ def add_or_update_versions_file(portname: str, new_version: str, git_tree: str) 
     }
     
     # Save the updated baseline.json
-    with open(baseline_file, "w") as f:
+    with open(baseline_file, "w", newline='\n') as f:
         json.dump(baseline_data, f, indent=2)
 
     print(f"Updated 'baseline.json' for port '{portname}' with new version: {new_version}.")

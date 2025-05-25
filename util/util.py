@@ -86,7 +86,7 @@ def get_or_create_baseline() -> Tuple[str, Dict]:
     baseline_file = os.path.join(versions_dir, "baseline.json")
     if not os.path.isfile(baseline_file):
         print(f"Creating new 'baseline.json' file in '{versions_dir}' directory.")
-        with open(baseline_file, "w") as f:
+        with open(baseline_file, "w", newline='\n') as f:
             json.dump({"default": {}}, f, indent=2)
     with open(baseline_file, "r") as f:
         return baseline_file, json.load(f)
