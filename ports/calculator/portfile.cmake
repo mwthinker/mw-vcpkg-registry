@@ -14,7 +14,7 @@ vcpkg_check_linkage(ONLY_STATIC_LIBRARY) # No export symbols is available in the
 
 vcpkg_cmake_install()
 
-vcpkg_cmake_config_fixup(PACKAGE_NAME Calculator CONFIG_PATH share/cmake/Calculator)
+vcpkg_cmake_config_fixup(PACKAGE_NAME Calculator CONFIG_PATH share/cmake/${PORT})
 
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/share)
