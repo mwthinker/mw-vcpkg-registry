@@ -1,8 +1,8 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO mwthinker/Signal
-    REF 62d3d10851f11e5cda6fbfd8f7d65b32f9639472
-    SHA512 7d2a049fd8241a90e7d2731a7ab59c7356990e1e351dbde2c461503b3e3faafc07d7ebafab532a2977c41cd1a140d8e7df10bef74ea33b97b499e7e466f0c974
+    REF 86e486fe480b1019a95942cb887e9ebecd62b09d
+    SHA512 e3f8a33ab9445b8bf14d0219b5ea0074f9ffe9d654de70c4408d0d009f789f2fa5b2a09b4c2fdafa64c29fcf3fc20435c5b3489d8cabf67c941223ce07b3d646
     HEAD_REF master
 )
 vcpkg_cmake_configure(

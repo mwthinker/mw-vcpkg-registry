@@ -1,8 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
   "name": "signal",
-  "version": "1.0.1",
-  "port-version": 0,
+  "version": "1.0.2",
   "description": "A simple Signals and Slots library based on C++20.",
   "homepage": "https://github.com/mwthinker/Signal",
   "license": "MIT",
