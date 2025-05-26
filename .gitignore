@@ -33,5 +33,10 @@
 *.out
 *.app
 __pycache__/
+
+
+# Custom build directories
 test/build
 test/linux_build
+test/build_debug
+test/build_release
