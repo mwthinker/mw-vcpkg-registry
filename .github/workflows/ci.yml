@@ -55,21 +55,12 @@ jobs:
           cmake --preset=${{ matrix.preset }} -B build_debug -DCMAKE_VERBOSE_MAKEFILE=1 -DCMAKE_BUILD_TYPE=Debug
           cmake --preset=${{ matrix.preset }} -B build_release -DCMAKE_VERBOSE_MAKEFILE=1 -DCMAKE_BUILD_TYPE=Release
 
-      - name: Compile binaries on Linux/macOS
-        shell: bash
-        run: |
-          cd test
-          cmake --build build_debug
-          cmake --build build_release
-        if: runner.os == 'Linux' || runner.os == 'macOS'
-
-      - name: Compile binaries on Windows
+      - name: Compile binaries
         shell: bash
         run: |
           cd test
           cmake --build build_debug --config Debug
           cmake --build build_release --config Release
-        if: runner.os == 'Windows'
 
       - name: Run binary
         shell: bash

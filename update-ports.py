@@ -17,10 +17,14 @@ All changes are committed to git automatically.
 """
 
 import os
-import requests
 import json
 import subprocess
 from typing import Optional
+try:
+    import requests
+except ImportError:
+    print("Error: The 'requests' module is required. Install it with 'pip install requests'.")
+    exit(1)
 try:
     from packaging.version import Version, InvalidVersion
 except ImportError:

@@ -51,7 +51,7 @@ Add a `vcpkg-configuration.json` file next to your `vcpkg.json`:
 
 ## Python Scripts
 
-- **update_registry:** Checks for new commits in all ports and updates the registry.
+- **update_registry:** Checks each port's remote GitHub repository for new commits and updates the registry accordingly.
   - Bash: `./update_registry.py`
   - PowerShell: `py update_registry.py`
 - **get_sha256:** Returns the SHA256 hash for a given GitHub repo/version.
