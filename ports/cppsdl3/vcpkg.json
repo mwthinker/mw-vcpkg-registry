@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "cppsdl3",
+  "version": "0.0.1",
+  "description": "A C++ wrapper around SDL3 (Simple Direct Media Layer) and SDL_gpu together with ImGui (Dear ImGui)",
+  "homepage": "https://github.com/mwthinker/CppSdl3",
+  "license": "MIT",
+  "dependencies": [
+    "fmt",
+    "freetype",
+    "glm",
+    "sdl3",
+    "sdl3-image",
+    "sdl3-ttf",
+    "spdlog",
+    
+    "gtest",
+    
+    "vcpkg-cmake",
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    }
+  ]
+}
