@@ -1,8 +1,8 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO mwthinker/CppSdl3
-    REF -
-    SHA512 -
+    REF 36ed10cb1318c0b9a3922c262bc750c23bbedba7
+    SHA512 35ae22e4f8e32dc70029fdb8f6cb1b5ab23fe1ee0425b77be414f2d6e680a1ce3590f83cabb78e6d98669c9b1868ff209db7525fccfba34a7d23618c9177d783
     HEAD_REF master
 )
 
