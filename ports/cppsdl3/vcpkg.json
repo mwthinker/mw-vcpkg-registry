@@ -14,7 +14,12 @@
     "sdl3",
     {
       "name": "sdl3-image",
-      "features": ["jpeg", "png", "tiff", "webp"]
+      "features": [
+        "jpeg",
+        "png",
+        "tiff",
+        "webp"
+      ]
     },
     "sdl3-ttf",
     "spdlog",
