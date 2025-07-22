@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
   "name": "cppsdl3",
   "version": "0.1.1",
-  "port-version": 1,
+  "port-version": 2,
   "description": "A C++ wrapper around SDL3 (Simple Direct Media Layer) and SDL_gpu together with ImGui (Dear ImGui)",
   "homepage": "https://github.com/mwthinker/CppSdl3",
   "license": "MIT",
@@ -12,7 +12,10 @@
     "glm",
     "gtest",
     "sdl3",
-    "sdl3-image",
+    {
+      "name": "sdl3-image",
+      "features": ["jpeg", "png", "tiff", "webp"]
+    },
     "sdl3-ttf",
     "spdlog",
     "vcpkg-cmake",
@@ -20,51 +23,5 @@
       "name": "vcpkg-cmake-config",
       "host": true
     }
-  ],
-  "features": {
-    "jpeg": {
-      "description": "Enable JPEG image loading via sdl3-image",
-      "dependencies": [
-        {
-          "name": "sdl3-image",
-          "features": [
-            "jpeg"
-          ]
-        }
-      ]
-    },
-    "png": {
-      "description": "Enable PNG image loading via sdl3-image",
-      "dependencies": [
-        {
-          "name": "sdl3-image",
-          "features": [
-            "png"
-          ]
-        }
-      ]
-    },
-    "tiff": {
-      "description": "Enable TIFF image loading via sdl3-image",
-      "dependencies": [
-        {
-          "name": "sdl3-image",
-          "features": [
-            "tiff"
-          ]
-        }
-      ]
-    },
-    "webp": {
-      "description": "Enable WebP image loading via sdl3-image",
-      "dependencies": [
-        {
-          "name": "sdl3-image",
-          "features": [
-            "webp"
-          ]
-        }
-      ]
-    }
-  }
+  ]
 }
