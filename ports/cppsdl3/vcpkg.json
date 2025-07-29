@@ -10,7 +10,12 @@
     "freetype",
     "glm",
     "gtest",
-    "sdl3",
+    {
+      "name": "sdl3",
+      "features": [
+        "vulkan"
+      ]
+    },
     {
       "name": "sdl3-image",
       "features": [
