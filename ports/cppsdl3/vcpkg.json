@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
   "name": "cppsdl3",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "A C++ wrapper around SDL3 (Simple Direct Media Layer) and SDL_gpu together with ImGui (Dear ImGui)",
   "homepage": "https://github.com/mwthinker/CppSdl3",
   "license": "MIT",
