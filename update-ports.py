@@ -281,7 +281,7 @@ def main() -> None:
                 ], check=True)
             subprocess.run([
                 "git", "commit",
-                "-m", f"Updated baseline for {len(updated_ports)} ports",
+                "-m", f"Updated baseline for {len(updated_ports)} port{'s' if len(updated_ports) > 1 else ''}",
                 "-m", "\n".join(updated_ports)
             ], check=True)
             print("Committed version files.")
