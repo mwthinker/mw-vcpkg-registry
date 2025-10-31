@@ -38,8 +38,8 @@ jobs:
         if: runner.os == 'Linux' || runner.os == 'macOS'
 
       - name: Install system dependencies
-        # Needed for SDL3
-        run: sudo apt-get update && sudo apt-get install -y libltdl-dev libx11-dev libxft-dev libxext-dev
+        # Some is needed by SDL3
+        run: sudo apt-get update && sudo apt-get install -y libltdl-dev libx11-dev libxft-dev libxext-dev libxext-dev autoconf autoconf-archive automake libtool
         if: runner.os == 'Linux'
 
       - name: Update vcpkg-configuration.json baseline to always use latest
