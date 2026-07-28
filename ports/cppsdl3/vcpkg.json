@@ -26,8 +26,8 @@
         "webp"
       ]
     },
-    "sdl3-ttf",
     "sdl3-mixer",
+    "sdl3-ttf",
     "spdlog",
     "vcpkg-cmake",
     {
