@@ -40,4 +40,7 @@ test/build
 test/linux_build
 test/build_debug
 test/build_release
+test/*/build_debug
+test/*/build_release
+test/*/vcpkg_installed
 test/vcpkg_installed

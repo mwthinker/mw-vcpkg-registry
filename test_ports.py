@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-"""Build and run the registry's local test project."""
+"""Build and run the registry's isolated local port test projects."""
 
 import argparse
 import json
@@ -116,9 +116,28 @@ def check_diff(root: Path, env: Dict[str, str]) -> None:
     print("Git whitespace check: OK")
 
 
+def find_test_projects(test_dir: Path, port_name: Optional[str]) -> List[Path]:
+    if port_name:
+        project = test_dir / port_name
+        if not project.is_dir() or not (project / "CMakeLists.txt").is_file():
+            raise RuntimeError(f"No test project found for port '{port_name}'")
+        return [project]
+
+    projects = sorted(
+        path
+        for path in test_dir.iterdir()
+        if path.is_dir()
+        and path.name not in ("build_debug", "build_release")
+        and (path / "CMakeLists.txt").is_file()
+    )
+    if not projects:
+        raise RuntimeError(f"No test projects found in {test_dir}")
+    return projects
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Build and run the registry test project using local ports."
+        description="Build and run isolated registry port tests using local ports."
     )
     parser.add_argument(
         "--vcpkg-root",
@@ -128,6 +147,10 @@ def main() -> None:
         "--preset",
         choices=("windows", "unix"),
         help="CMake preset; defaults to windows on Windows and unix elsewhere",
+    )
+    parser.add_argument(
+        "--port",
+        help="test only the named port; omit to test all ports",
     )
     parser.add_argument(
         "--skip-metadata",
@@ -144,10 +167,6 @@ def main() -> None:
     root = Path(__file__).resolve().parent
     test_dir = root / "test"
     ports_dir = root / "ports"
-    build_directories = {
-        "Debug": test_dir / "build_debug",
-        "Release": test_dir / "build_release",
-    }
 
     try:
         vcpkg_root, vcpkg = find_vcpkg(args.vcpkg_root)
@@ -159,51 +178,55 @@ def main() -> None:
         if not args.skip_metadata:
             validate_registry(root)
 
-        run(
-            [
-                str(vcpkg),
-                "install",
-                "--overlay-ports",
-                str(ports_dir),
-                "--no-print-usage",
-            ],
-            test_dir,
-            env,
-        )
-
-        for configuration, build_directory in build_directories.items():
+        for project_dir in find_test_projects(test_dir, args.port):
+            project_name = project_dir.name
+            print(f"\n=== Testing {project_name} ===")
             run(
                 [
-                    "cmake",
-                    "--preset",
-                    preset,
-                    "-S",
-                    str(test_dir),
-                    "-B",
-                    str(build_directory),
-                    "-DCMAKE_VERBOSE_MAKEFILE=1",
-                    f"-DCMAKE_BUILD_TYPE={configuration}",
+                    str(vcpkg),
+                    "install",
+                    "--overlay-ports",
+                    str(ports_dir),
+                    "--no-print-usage",
                 ],
-                root,
-                env,
-            )
-            run(
-                [
-                    "cmake",
-                    "--build",
-                    str(build_directory),
-                    "--config",
-                    configuration,
-                ],
-                root,
+                project_dir,
                 env,
             )
 
-            if not args.skip_run:
-                executable = build_directory / "TestProject"
-                if os.name == "nt":
-                    executable = build_directory / configuration / "TestProject.exe"
-                run([str(executable)], root, env)
+            for configuration in ("Debug", "Release"):
+                build_directory = project_dir / f"build_{configuration.lower()}"
+                run(
+                    [
+                        "cmake",
+                        "--preset",
+                        preset,
+                        "-S",
+                        str(project_dir),
+                        "-B",
+                        str(build_directory),
+                        "-DCMAKE_VERBOSE_MAKEFILE=1",
+                        f"-DCMAKE_BUILD_TYPE={configuration}",
+                    ],
+                    project_dir,
+                    env,
+                )
+                run(
+                    [
+                        "cmake",
+                        "--build",
+                        str(build_directory),
+                        "--config",
+                        configuration,
+                    ],
+                    root,
+                    env,
+                )
+
+                if not args.skip_run:
+                    executable = build_directory / project_name
+                    if os.name == "nt":
+                        executable = build_directory / configuration / f"{project_name}.exe"
+                    run([str(executable)], root, env)
 
         check_diff(root, env)
         print("\nAll port tests passed.")

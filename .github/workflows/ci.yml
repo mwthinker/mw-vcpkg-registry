@@ -1,5 +1,5 @@
 name: CI
-on: 
+on:
   push:
     branches:
       - master
@@ -42,38 +42,6 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y libltdl-dev libx11-dev libxft-dev libxext-dev libxext-dev autoconf autoconf-archive automake libtool
         if: runner.os == 'Linux'
 
-      - name: Update vcpkg-configuration.json baseline to always use latest
+      - name: Test ports
         shell: bash
-        run: |
-          LATEST_BASELINE=$(git ls-remote https://github.com/mwthinker/mw-vcpkg-registry.git HEAD | awk '{print $1}')
-          sed -i.bak -E '/"repository": "https:\/\/github.com\/mwthinker\/mw-vcpkg-registry.git"/{N;s/("repository": "https:\/\/github.com\/mwthinker\/mw-vcpkg-registry.git",\n[[:space:]]*"baseline": ")[a-f0-9]+(")/\1'"$LATEST_BASELINE"'\2/;}' test/vcpkg-configuration.json
-
-      - name: Run CMake
-        shell: bash
-        run: |
-          cd test
-          cmake --preset=${{ matrix.preset }} -B build_debug -DCMAKE_VERBOSE_MAKEFILE=1 -DCMAKE_BUILD_TYPE=Debug
-          cmake --preset=${{ matrix.preset }} -B build_release -DCMAKE_VERBOSE_MAKEFILE=1 -DCMAKE_BUILD_TYPE=Release
-
-      - name: Compile binaries
-        shell: bash
-        run: |
-          cd test
-          cmake --build build_debug --config Debug
-          cmake --build build_release --config Release
-
-      - name: Run binary
-        shell: bash
-        run: |
-          cd test
-          ./build_debug/TestProject
-          ./build_release/TestProject
-        if: runner.os == 'Linux' || runner.os == 'macOS'
-
-      - name: Run binary on Windows
-        shell: bash
-        run: |
-          cd test
-          ./build_debug/Debug/TestProject.exe
-          ./build_release/Release/TestProject.exe
-        if: runner.os == 'Windows'
+        run: python test_ports.py --preset=${{ matrix.preset }}

@@ -18,7 +18,7 @@ Add a `vcpkg-configuration.json` file next to your `vcpkg.json`:
       "baseline": "a5390764a8ebc4b9a1b50000ae844bf456126124",
       "repository": "https://github.com/mwthinker/mw-vcpkg-registry.git",
       "packages": [
-        "cppsdl2", "signal", "calculator"
+        "cppsdl2", "cppsdl3", "signal", "calculator"
       ]
     }
   ]
@@ -44,7 +44,7 @@ Add a `vcpkg-configuration.json` file next to your `vcpkg.json`:
 
 ## Testing Ports
 
-Add the port to `test/vcpkg.json` and `test/CMakeLists.txt`, then run `test_ports.py` before pushing. It validates metadata, builds Debug and Release using the local ports, runs the test executable, and checks Git whitespace errors.
+Add an isolated consumer under `test/<port>/`, then run `test_ports.py` before pushing. It validates metadata, builds every consumer in Debug and Release using the local ports, runs each test executable, and checks Git whitespace errors.
 
 ---
 
