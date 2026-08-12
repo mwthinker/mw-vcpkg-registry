@@ -44,8 +44,7 @@ Add a `vcpkg-configuration.json` file next to your `vcpkg.json`:
 
 ## Testing Ports
 
-- Update `CMakeLists.txt`, `vcpkg-configuration.txt`, and `vcpkg.json` with the new/updated port.
-- GitHub Actions will build and run the binary.
+Add the port to `test/vcpkg.json` and `test/CMakeLists.txt`, then run `test_ports.py` before pushing. It validates metadata, builds Debug and Release using the local ports, runs the test executable, and checks Git whitespace errors.
 
 ---
 
@@ -60,6 +59,10 @@ Add a `vcpkg-configuration.json` file next to your `vcpkg.json`:
 - **bump-port-version:** Increments the version of a port and updates the SHA256 hash.
   - Bash: `./bump_port_version.py --port cppsdl2`
   - PowerShell: `py bump_port_version.py --port cppsdl2`
+- **test_ports:** Tests local ports before pushing.
+  - Windows: `py test_ports.py`
+  - Linux: `python3 test_ports.py`
+  - Set `VCPKG_ROOT` first, or pass `--vcpkg-root <path>`.
 
 ---
 
