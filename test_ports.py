@@ -116,13 +116,9 @@ def check_diff(root: Path, env: Dict[str, str]) -> None:
     print("Git whitespace check: OK")
 
 
-def find_test_projects(test_dir: Path, port_name: Optional[str]) -> List[Path]:
-    if port_name:
-        project = test_dir / port_name
-        if not project.is_dir() or not (project / "CMakeLists.txt").is_file():
-            raise RuntimeError(f"No test project found for port '{port_name}'")
-        return [project]
-
+def find_test_projects(
+    test_dir: Path, port_name: Optional[str], announce_selection: bool = True
+) -> List[Path]:
     projects = sorted(
         path
         for path in test_dir.iterdir()
@@ -130,8 +126,23 @@ def find_test_projects(test_dir: Path, port_name: Optional[str]) -> List[Path]:
         and path.name not in ("build_debug", "build_release")
         and (path / "CMakeLists.txt").is_file()
     )
+
+    print("Available ports to test:")
+    for project in projects:
+        print(f"  - {project.name}")
+
+    if port_name:
+        project = test_dir / port_name
+        if not project.is_dir() or not (project / "CMakeLists.txt").is_file():
+            raise RuntimeError(f"No test project found for port '{port_name}'")
+        if announce_selection:
+            print(f"Testing selected port: {port_name}")
+        return [project]
+
     if not projects:
         raise RuntimeError(f"No test projects found in {test_dir}")
+    if announce_selection:
+        print("Testing all available ports")
     return projects
 
 
@@ -153,6 +164,11 @@ def main() -> None:
         help="test only the named port; omit to test all ports",
     )
     parser.add_argument(
+        "--list",
+        action="store_true",
+        help="print available ports and exit",
+    )
+    parser.add_argument(
         "--skip-metadata",
         action="store_true",
         help="skip registry metadata validation",
@@ -167,6 +183,10 @@ def main() -> None:
     root = Path(__file__).resolve().parent
     test_dir = root / "test"
     ports_dir = root / "ports"
+
+    if args.list:
+        find_test_projects(test_dir, None, announce_selection=False)
+        return
 
     try:
         vcpkg_root, vcpkg = find_vcpkg(args.vcpkg_root)
