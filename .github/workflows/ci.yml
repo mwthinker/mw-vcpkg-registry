@@ -39,7 +39,7 @@ jobs:
 
       - name: Install system dependencies
         # Some is needed by SDL3
-        run: sudo apt-get update && sudo apt-get install -y libltdl-dev libx11-dev libxft-dev libxext-dev libxext-dev autoconf autoconf-archive automake libtool
+        run: sudo apt-get update && sudo apt-get install -y libltdl-dev libx11-dev libxft-dev libxext-dev libxext-dev libxcursor-dev autoconf autoconf-archive automake libtool
         if: runner.os == 'Linux'
 
       - name: Test ports
